@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AliceCorridor : MonoBehaviour {
+public class ProceduralCorridor : MonoBehaviour {
 
 	//public
 	public ArrayList PreviousLayer;

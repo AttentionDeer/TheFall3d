@@ -57,7 +57,7 @@
      <Compile Include="Assets\DenisScripting\ResetState.cs" />
      <Compile Include="Assets\DenisScripting\StartingBoxDie.cs" />
      <Compile Include="Assets\DenisScripting\Toster.cs" />
-     <Compile Include="Assets\TestScripts\AliceCorridor.cs" />
+     <Compile Include="Assets\TestScripts\ProceduralCorridor.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
