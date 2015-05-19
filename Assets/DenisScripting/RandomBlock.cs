@@ -4,21 +4,27 @@ using System.Collections;
 public class RandomBlock : MonoBehaviour {
 	protected Vector3 RandVector;
 	protected float TimerScale = 0;
+	public float AdjustScale = 1; // дополнительный модификатор масштаба объектов
 
 	protected int type = 0;
-	// Use this for initialization=
+	// Use this for initialization
 	void Start () {
 		//StartFunction();
 	}
 
 	void StartFunction()
 	{
+		RandomizeBlock(AdjustScale);
+	}
 
+	void RandomizeBlock(float ScaleModifier)
+	{
+		double RngValue = Random.value;
 
-		if (Random.value < 0.1) {
+		if (RngValue < 0.1) {
 			RandVector = new Vector3 (Mathf.Pow (Random.value * 1.2f, 10) + 0.2f, 1, Mathf.Pow (Random.value * 1.2f, 15) + 0.2f);
 			transform.localScale = new Vector3 (0, 0, 0);
-		} else if (Random.value > 0.1 && Random.value < 0.2) {
+		} else if (RngValue < 0.2) {
 			RandVector = new Vector3 (Mathf.Pow (Random.value * 1.2f, 15) + 0.2f, 1, Mathf.Pow (Random.value * 1.2f, 10) + 0.2f);
 			transform.localScale = new Vector3 (0, 0, 0);
 		} else {
@@ -26,7 +32,7 @@ public class RandomBlock : MonoBehaviour {
 			RandVector = new Vector3 (0.9f, 1, 0.9f);
 			transform.localScale = new Vector3 (0, 0, 0);
 		}
-
+		RandVector = new Vector3( RandVector.x * ScaleModifier, RandVector.y * ScaleModifier, RandVector.z * ScaleModifier);
 	}
 
 	// Update is called once per frame
