@@ -10,13 +10,17 @@ public class AliceCorridor : MonoBehaviour {
 	void Start () {
 		//PreviousLayer = new ArrayList ();
 		Mesh mesh = new Mesh();
-		Vector3[] vertices = new Vector3[3];
-			vertices [0] = new Vector3 (0, 0, 0);
-		vertices [1] = new Vector3 (1, 0, 0);
-			vertices [2] = new Vector3 (0,0,1);
-		mesh.vertices = vertices;
-	
-		int[] triangles = {0,2,1};
+		Vector3[] verticesTop = GenerateOutline (1, -0.5f);
+		Vector3[] verticesBottom = GenerateOutline (1, 0.5f);
+		int[] triangles = GenerateTriangles (verticesTop, verticesBottom);
+
+		Vector3[] totalVertices = new Vector3[verticesTop.Length + verticesBottom.Length];
+		for (int i = 0; i < verticesTop.Length; i++)
+			totalVertices [i] = verticesTop [i];
+		for (int i = 0; i < verticesBottom.Length; i++)
+			totalVertices [verticesTop.Length+i] = verticesBottom [i];
+
+		mesh.vertices = totalVertices;
 		mesh.triangles = triangles;
 
 		GetComponent<MeshFilter>().mesh = mesh;
@@ -27,18 +31,19 @@ public class AliceCorridor : MonoBehaviour {
 
 	Vector3[] GenerateOutline(int sections = 4, float height = 0)
 	{
-		Vector3[] newOutline = new Vector3[4 +(sections-1)*4];
+		Vector3[] newOutline = new Vector3[(sections)*4];
 		Debug.Log ("newOutline length is = " + newOutline.Length);
 
 		float sampleOffset = 0;
 
 		for (int i = 0; i < sections; i++)
 		{
-			newOutline[i] = 			new Vector3(sampleOffset, height ,Random.Range(-0.1f,0.1f) );
-			newOutline[i+sections*2] =	new Vector3(sampleOffset, height ,Random.Range(-0.1f,0.1f) );
+			newOutline[i] = 			new Vector3(sampleOffset, height ,Random.Range(-0.01f, 0.01f) );
+            newOutline[i+sections] = 	new Vector3(Random.Range(-0.01f, 0.01f), height, sampleOffset);
 
-            newOutline[i+sections] = 	new Vector3(Random.Range(-0.1f,0.1f), height, sampleOffset);
-            newOutline[i+sections*3] = 	new Vector3(Random.Range(-0.1f,0.1f), height, sampleOffset);
+			newOutline[i+sections*2] =	new Vector3(sampleOffset, height ,1+ Random.Range(-0.01f,0.01f) );
+            newOutline[i+sections*3] = 	new Vector3(1+Random.Range(-0.01f,0.01f), height, sampleOffset);
+			sampleOffset += 1.0f/sections;
 		}
 
 		return newOutline;
@@ -46,8 +51,20 @@ public class AliceCorridor : MonoBehaviour {
 
 	int[] GenerateTriangles(Vector3[] topLine, Vector3[] BottomLine)
 	{
-		int[] newTriangles = new int[3*(topLine+BottomLine)];
-
+		int[] newTriangles = new int[3*(topLine.Length+BottomLine.Length)];
+		int j = 0;
+		for(int i = 0; i < topLine.Length; i++)
+		{
+			newTriangles[j] = i;
+			newTriangles[j+1] = i+1;
+			newTriangles[j+2] = topLine.Length + i;
+			j+=3;
+			//newTriangles[j] = BottomLine.Length +i+1;
+			//newTriangles[j+1] = BottomLine.Length +i+2;
+			//newTriangles[j+2] = i+1;
+			//j+=3;
+		}
+		return newTriangles;
 	}
 
 	/*
