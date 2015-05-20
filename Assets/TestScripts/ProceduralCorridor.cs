@@ -12,7 +12,7 @@ public class ProceduralCorridor : MonoBehaviour {
 		Mesh mesh = new Mesh();
 		Vector3[] verticesTop = GenerateOutline (1, -0.5f);
 		Vector3[] verticesBottom = GenerateOutline (1, 0.5f);
-		int[] triangles = GenerateTriangles (verticesTop, verticesBottom);
+		int[] triangles = GenerateTriangles (verticesTop, verticesBottom, 1);
 
 		Vector3[] totalVertices = new Vector3[verticesTop.Length + verticesBottom.Length];
 		for (int i = 0; i < verticesTop.Length; i++)
@@ -24,6 +24,7 @@ public class ProceduralCorridor : MonoBehaviour {
 		mesh.triangles = triangles;
 
 		GetComponent<MeshFilter>().mesh = mesh;
+		GetComponent<MeshCollider> ().sharedMesh = mesh;
 		}
 
 	
@@ -31,39 +32,49 @@ public class ProceduralCorridor : MonoBehaviour {
 
 	Vector3[] GenerateOutline(int sections = 4, float height = 0)
 	{
-		Vector3[] newOutline = new Vector3[(sections)*4];
+		Vector3[] newOutline = new Vector3[sections*4];
 		Debug.Log ("newOutline length is = " + newOutline.Length);
 
 		float sampleOffset = 0;
 
 		for (int i = 0; i < sections; i++)
 		{
-			newOutline[i] = 			new Vector3(sampleOffset, height ,Random.Range(-0.01f, 0.01f) );
-            newOutline[i+sections] = 	new Vector3(Random.Range(-0.01f, 0.01f), height, sampleOffset);
+			newOutline[i] = 			new Vector3(-0.5f+sampleOffset, height ,-0.5f );
+			newOutline[i+sections] = 	new Vector3(0.5f, height, -0.5f+sampleOffset);
 
-			newOutline[i+sections*2] =	new Vector3(sampleOffset, height ,1+ Random.Range(-0.01f,0.01f) );
-            newOutline[i+sections*3] = 	new Vector3(1+Random.Range(-0.01f,0.01f), height, sampleOffset);
+			newOutline[i+sections*2] =	new Vector3(0.5f-sampleOffset, height ,0.5f );
+			newOutline[i+sections*3] = 	new Vector3(-0.5f, height, 0.5f-sampleOffset);
 			sampleOffset += 1.0f/sections;
 		}
 
 		return newOutline;
 	}
 
-	int[] GenerateTriangles(Vector3[] topLine, Vector3[] BottomLine)
+	int[] GenerateTriangles(Vector3[] topLine, Vector3[] BottomLine, int sections)
 	{
-		int[] newTriangles = new int[3*(topLine.Length+BottomLine.Length)];
+		int[] newTriangles = new int[3*2*4*sections];
+		Debug.Log ("triangle count = " + newTriangles.Length/3);
 		int j = 0;
-		for(int i = 0; i < topLine.Length; i++)
+		for(int i = 0; i < sections*4; i++)
 		{
 			newTriangles[j] = i;
 			newTriangles[j+1] = i+1;
-			newTriangles[j+2] = topLine.Length + i;
+			if(i == sections*4-1)
+				newTriangles[j+1] = 0;
+			newTriangles[j+2] = sections*4 + i;
 			j+=3;
-			//newTriangles[j] = BottomLine.Length +i+1;
-			//newTriangles[j+1] = BottomLine.Length +i+2;
-			//newTriangles[j+2] = i+1;
-			//j+=3;
+
+			Debug.Log(i+" "+(i+1)+" "+(sections*4+i) );
+
+			newTriangles[sections*4-1+j] = sections*4 +i;
+			newTriangles[sections*4-1+j+1] = sections*4 +i+1;
+			if(i == sections*4-1)
+				newTriangles[sections*4-1+j+1] = 0;
+			newTriangles[sections*4-1+j+2] = i;
+
+			Debug.Log(i+" "+(i+1)+" "+(sections*4+i) );
 		}
+
 		return newTriangles;
 	}
 
