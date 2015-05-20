@@ -40,12 +40,15 @@ public class ProceduralCorridor : MonoBehaviour {
 			totalVertices [verticesTop.Length+i] = verticesBottom [i];
 		
 		mesh.vertices = totalVertices;
+		Debug.Log (mesh.vertices.Length);
 		mesh.triangles = triangles;
-		
+		mesh.uv = GenerateUVmap (mesh.vertices.Length/2);
+
 		GetComponent<MeshFilter>().mesh = mesh;
 		GetComponent<MeshCollider> ().sharedMesh = mesh;
+
 	}
-	
+
 	// Update is called once per frame
 
 	Vector3[] GenerateOutline(int sections = 4, float height = 0, float jitter = 0.1f)
@@ -100,5 +103,28 @@ public class ProceduralCorridor : MonoBehaviour {
 		}
 
 		return newTriangles;
+	}
+
+	Vector2[] GenerateUVmap(int vertices)
+	{
+		Vector2[] uvs = new Vector2[2*vertices];
+		Debug.Log (uvs.Length);
+		bool step = true;
+		//map the top of sector
+		for(int i = 0; i < vertices; i++)
+		{
+			if( step)
+			{
+				uvs[i] = new Vector2(0,0);
+				uvs[i+vertices] = new Vector2(0,1);
+			}
+			else
+			{
+				uvs[i] = new Vector2(1,0);
+				uvs[i+vertices] = new Vector2(1,1);
+			}
+			step = !step;
+		}
+		return uvs;
 	}
 }
